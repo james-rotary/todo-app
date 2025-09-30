@@ -95,11 +95,22 @@ function AddTodoForm() {
 export default async function TodosPage() {
   let todos: Todo[] = []
   let error: string | null = null
+  let isLoading = false
 
   try {
     todos = await api.todos.list()
   } catch (err) {
-    error = err instanceof Error ? err.message : 'Failed to load todos'
+    // Check if it's a network/connection error
+    if (err instanceof Error && (
+      err.message.includes('fetch failed') || 
+      err.message.includes('ECONNREFUSED') ||
+      err.message.includes('ENOTFOUND') ||
+      err.name === 'AbortError'
+    )) {
+      error = 'Unable to connect to the server. Please make sure the API is running and try refreshing the page.'
+    } else {
+      error = err instanceof Error ? err.message : 'Failed to load todos'
+    }
     console.error('Failed to fetch todos:', err)
   }
 
@@ -113,14 +124,22 @@ export default async function TodosPage() {
       
       {error && (
         <div style={{
-          padding: '12px',
-          backgroundColor: '#fef2f2',
-          border: '1px solid #fecaca',
+          padding: '16px',
+          backgroundColor: '#fef3cd',
+          border: '1px solid #fcd34d',
           borderRadius: '8px',
-          color: '#dc2626',
+          color: '#92400e',
           marginBottom: '24px'
         }}>
-          Error: {error}
+          <div style={{ fontWeight: '600', marginBottom: '4px' }}>
+            Connection Issue
+          </div>
+          <div style={{ fontSize: '14px' }}>
+            {error}
+          </div>
+          <div style={{ fontSize: '14px', marginTop: '8px', opacity: 0.8 }}>
+            The application may still be starting up. Please wait a moment and refresh the page.
+          </div>
         </div>
       )}
       

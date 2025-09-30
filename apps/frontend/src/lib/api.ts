@@ -1,7 +1,18 @@
 import { Todo, CreateTodoDto, UpdateTodoDto } from '../types'
 
-// Use Docker service name since we're running in containers
-const API_BASE_URL = 'http://api:8080'
+// Standardized API URL approach:
+// - In Kubernetes: Use internal service name for server-side calls
+// - In Docker Compose: Use service name for server-side calls  
+// - In Browser: Use relative path for client-side calls
+function getApiBaseUrl(): string {
+  // Server-side rendering (Node.js context)
+  if (typeof window === 'undefined') {
+    // Use environment-specific internal URL
+    return process.env.API_BASE_URL_INTERNAL || 'http://todo-backend:8080'
+  }
+  // Client-side (browser context) - always use relative path
+  return '/api'
+}
 
 export class ApiError extends Error {
   constructor(
@@ -18,13 +29,16 @@ async function fetchApi<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const url = `${API_BASE_URL}${endpoint}`
+  const apiBaseUrl = getApiBaseUrl()
+  const url = `${apiBaseUrl}${endpoint}`
   
   const response = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
       ...options.headers,
     },
+    // Add timeout to prevent hanging
+    signal: AbortSignal.timeout(10000), // 10 second timeout
     ...options,
   })
 
@@ -47,10 +61,33 @@ async function fetchApi<T>(
   return response.json()
 }
 
+async function fetchApiWithRetry<T>(
+  endpoint: string,
+  options: RequestInit = {},
+  retries: number = 2
+): Promise<T> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      return await fetchApi<T>(endpoint, options)
+    } catch (error) {
+      // If this is the last attempt, throw the error
+      if (attempt === retries) {
+        throw error
+      }
+      
+      // Wait a bit before retrying (exponential backoff)
+      await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000))
+    }
+  }
+  
+  // This should never be reached, but TypeScript needs it
+  throw new Error('All retry attempts failed')
+}
+
 export const api = {
   todos: {
     list: (): Promise<Todo[]> => 
-      fetchApi<Todo[]>('/todos'),
+      fetchApiWithRetry<Todo[]>('/todos'),
     
     create: (todo: CreateTodoDto): Promise<Todo> =>
       fetchApi<Todo>('/todos', {

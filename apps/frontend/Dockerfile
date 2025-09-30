@@ -3,6 +3,10 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
+# Accept build argument for API URL
+ARG API_BASE_URL_INTERNAL=http://localhost:8080
+ENV API_BASE_URL_INTERNAL=$API_BASE_URL_INTERNAL
+
 # Copy package files
 COPY package.json ./
 

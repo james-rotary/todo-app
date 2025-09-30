@@ -1,0 +1,39 @@
+{
+  "name": "todo-app",
+  "version": "1.0.0",
+  "description": "A three-tier TypeScript todo application with Next.js, Express, and PostgreSQL",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w api\" \"npm run dev -w frontend\"",
+    "build": "npm run build -w api && npm run build -w frontend",
+    "start": "concurrently \"npm run start -w api\" \"npm run start -w frontend\"",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down",
+    "clean": "npm run clean -w api && npm run clean -w frontend",
+    "type-check": "npm run type-check -w api && npm run type-check -w frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "todo",
+    "typescript",
+    "nextjs",
+    "express",
+    "postgresql",
+    "prisma",
+    "docker",
+    "kubernetes"
+  ],
+  "author": "",
+  "license": "MIT"
+}

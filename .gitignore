@@ -1,0 +1,140 @@
+# Dependencies# Dependencies
+
+node_modules/node_modules/
+
+npm-debug.log*npm-debug.log*
+
+yarn-debug.log*yarn-debug.log*
+
+yarn-error.log*yarn-error.log*
+
+pnpm-debug.log*
+
+# Environment variables
+
+# Environment variables.env
+
+.env.env.local
+
+.env.local.env.development.local
+
+.env.development.local.env.test.local
+
+.env.test.local.env.production.local
+
+.env.production.local
+
+# Build outputs
+
+# Build outputsdist/
+
+dist/build/
+
+build/
+
+.next/# Logs
+
+logs
+
+# Logs*.log
+
+logs
+
+*.log# Runtime data
+
+pids
+
+# Runtime data*.pid
+
+pids*.seed
+
+*.pid*.pid.lock
+
+*.seed
+
+*.pid.lock# Coverage directory used by tools like istanbul
+
+coverage/
+
+# Coverage directory
+
+coverage/# nyc test coverage
+
+.nyc_output.nyc_output
+
+
+
+# Dependency directories# Dependency directories
+
+jspm_packages/node_modules/
+
+jspm_packages/
+
+# Optional npm cache directory
+
+.npm# Optional npm cache directory
+
+.npm
+
+# Optional eslint cache
+
+.eslintcache# Optional eslint cache
+
+.eslintcache
+
+# Output of 'npm pack'
+
+*.tgz# Output of 'npm pack'
+
+*.tgz
+
+# Yarn Integrity file
+
+.yarn-integrity# Yarn Integrity file
+
+.yarn-integrity
+
+# IDE files
+
+.vscode/# dotenv environment variables file
+
+.idea/.env
+
+*.swp
+
+*.swo# next.js build output
+
+.next
+
+# OS generated files
+
+.DS_Store# IDE files
+
+.DS_Store?.vscode/
+
+._*.idea/
+
+.Spotlight-V100*.swp
+
+.Trashes*.swo
+
+ehthumbs.db
+
+Thumbs.db# OS generated files
+
+.DS_Store
+
+# Docker.DS_Store?
+
+docker-compose.override.yml._*
+
+.Spotlight-V100
+
+# Prisma.Trashes
+
+apps/api/prisma/migrations/*ehthumbs.db
+
+!apps/api/prisma/migrations/.gitkeepThumbs.db
+
+# Docker
+docker-compose.override.yml

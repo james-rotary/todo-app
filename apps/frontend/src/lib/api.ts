@@ -1,5 +1,8 @@
 import { Todo, CreateTodoDto, UpdateTodoDto } from '../types'
 
+// Minimal type declaration to avoid requiring @types/node in this environment
+declare const process: { env?: Record<string, string | undefined> } | undefined
+
 // Standardized API URL approach:
 // - In Kubernetes: Use internal service name for server-side calls
 // - In Docker Compose: Use service name for server-side calls  
@@ -7,8 +10,9 @@ import { Todo, CreateTodoDto, UpdateTodoDto } from '../types'
 function getApiBaseUrl(): string {
   // Server-side rendering (Node.js context)
   if (typeof window === 'undefined') {
-    // Use environment-specific internal URL
-    return process.env.API_BASE_URL_INTERNAL || 'http://todo-backend:8080'
+    // Use environment-specific internal URL; guard in case process/env types are unavailable
+    const fromEnv = (typeof process !== 'undefined' && process && process.env && process.env.API_BASE_URL_INTERNAL)
+    return fromEnv || 'http://todo-backend:8080'
   }
   // Client-side (browser context) - always use relative path
   return '/api'

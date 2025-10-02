@@ -10,8 +10,8 @@ declare const process: { env?: Record<string, string | undefined> } | undefined
 function getApiBaseUrl(): string {
   // Server-side rendering (Node.js context)
   if (typeof window === 'undefined') {
-    // Use environment-specific internal URL; guard in case process/env types are unavailable
-    const fromEnv = (typeof process !== 'undefined' && process && process.env && process.env.API_BASE_URL_INTERNAL)
+    // Use environment-specific internal URL at runtime; dynamic access prevents build-time inlining
+    const fromEnv = (typeof process !== 'undefined' && (process as any)?.env?.['API_BASE_URL_INTERNAL']) as string | undefined
     return fromEnv || 'http://todo-backend:8080'
   }
   // Client-side (browser context) - always use relative path
@@ -91,22 +91,22 @@ async function fetchApiWithRetry<T>(
 export const api = {
   todos: {
     list: (): Promise<Todo[]> => 
-      fetchApiWithRetry<Todo[]>('/todos'),
+      fetchApiWithRetry<Todo[]>('/api/todos'),
     
     create: (todo: CreateTodoDto): Promise<Todo> =>
-      fetchApi<Todo>('/todos', {
+      fetchApi<Todo>('/api/todos', {
         method: 'POST',
         body: JSON.stringify(todo),
       }),
     
     update: (id: number, updates: UpdateTodoDto): Promise<Todo> =>
-      fetchApi<Todo>(`/todos/${id}`, {
+      fetchApi<Todo>(`/api/todos/${id}`, {
         method: 'PATCH',
         body: JSON.stringify(updates),
       }),
     
     delete: (id: number): Promise<void> =>
-      fetchApi<void>(`/todos/${id}`, {
+      fetchApi<void>(`/api/todos/${id}`, {
         method: 'DELETE',
       }),
   },

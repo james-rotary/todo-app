@@ -21,7 +21,7 @@ app.get('/healthz', healthCheck)
 app.get('/readyz', readinessCheck)
 
 // API routes
-app.use('/todos', todosRouter)
+app.use('/api/todos', todosRouter)
 
 // Error handling
 app.use(errorHandler)
